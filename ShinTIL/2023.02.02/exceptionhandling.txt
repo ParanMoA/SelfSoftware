@@ -1,0 +1,43 @@
+### 예외처리(Exception Handling)
+
+한 컨트롤러 안에 있는 캐치 블럭은 컨트롤러 내에만 영향을 미침. 
+
+→ 컨트롤러 마다 같은 예외 처리 코드? 
+
+⇒ @ControllerAdvice 이용하면 모든 컨트롤러에 적용 가능
+
+**[1] @ExceptionHandler와 @ControllerAdvice**
+
+: 예외 처리를 위한 메서드를 작성하고 @ExceptionHandler를 붙인다.
+
+: @ControllerAdvice로 전역 예외 처리 클래스 작성 가능(패키지 지정 가능)
+
+→ 예외 처리 메서드가 중복된 경우, 컨트롤러 내의 예외 처리 메서드가 우선!
+
+**[2] @ResponseStatus**
+
+: 응답 메시지의 상태 코드를 변경할 때 사용
+
+예) 예외 처리 메서드 → 예외 처리에 성공했다? 성공? 200번대? 아님! 400번대로 바꿔주기
+
+/ 예외 클래스를 만들 때 → 디폴트가 500인데 400번대로 바꿔주고 싶을 때
+
+**[3] <error-page> - web.xml**
+
+: 상태  코드별로 뷰를 맵핑
+
+**[4] SimpleMappingExceptionResolver**
+
+: 예외 종류별 뷰 맵핑에 사용. servlet-context.xml에 등록
+
+**[5] ExceptionResolver**
+
+→ 예외가 자신을 호출한 DispatcherServlet으로 던져짐. 예외 처리 기본 전략(handlerRxceptionResolvers)에 의해 누가 예외를 처리할지 하나씩 순서대로 확인함.
+
+**[6] 스프링에서의 예외 처리**
+
+- 컨트롤러 메서드 내에서 try-catch로 처리
+- 컨트롤러에 @ExceptionHandler 메서드가 처리
+- @ControllerAdvice 클래스의 @ExceptionHandler 메서드가 처리
+- 예외 종류별로 뷰 지정 - SimpleMappingExceptionResolver
+- 응답 상태 코드별로 뷰 지정- <error-page>
