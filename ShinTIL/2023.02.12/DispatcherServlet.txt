@@ -1,0 +1,13 @@
+### DispatcherServlet 파헤치기
+
+**[1] DispatcherServlet이 하는 일**
+
+공통 처리 부분을 따로 빼내서 전처리 하는것이 DispatcherServlet이 하는 일!
+
+**[2] Spring MVC의 요청 처리 과정**
+
+요청 발생 → HandlerMapping에 URL과 메서드를 key와 value로 저장해줌 → DispatcherServlet이 key와 value를 보고 해당하는 URL을 HandlerAdapter에게 넘겨줌 → HandlerAdapter가 Controller을 호출함 → ViewResolver에게 jsp 이름을 String으로 전달하면 ViewResolver가 실제 경로 반환 → 해당 뷰를 DispatcherServlet이 해당 뷰를 호출 
+
+**[3] DispatcherServlet의 소스 분석**
+
+기본 전략 ? 기본적으로 사용하는 클래스
