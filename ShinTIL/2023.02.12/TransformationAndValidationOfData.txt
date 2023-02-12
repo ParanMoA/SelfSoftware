@@ -1,0 +1,66 @@
+### 데이터의 변환과 검증
+
+**[1] WebDataBinder**
+
+parameter로 입력된 값을 key-value로 mapping함!
+
+만약 새로운 객체를 만들어서 저장하고 싶을 때는 **WebDataBinder**가 타입 변환과 데이터 검증을 거진 후 BindingResult에 저장하면 BindingResult가 컨트롤러에 값을 넘겨 객체에 값을 저장함.
+
+**[2] RegisterController에 변환 기능 추가하기 - 실습**
+
+@NumberFormat @DataFormat 애노테이션 이용
+
+**[3] PropertyEditor**
+
+: 양방향 타입 변환 (String → 타입, 타입 → String) 특정 타입이나 이름의 필드에 적용 가능
+
+- 디폴트 PropertyEditor - 스프링이 기본적으로 제공
+- 커스텀 PropertyEditor - 사용자가 직접 구현. PropertyEditorSupport를 상속하면 편리
+
+모든 컨트롤러 내에서의 변환 - WebBindinInitializer를 구현 후 등록
+
+특정 컨트롤러 내에서의 변환 - 컨트롤러에 @InitBinder가 붙은 메서드를 작성
+
+**[4] Converter와 ConversionService**
+
+Converter - 단방향 타입 변환 → PropertyEditor의 단점을 개선(stateful → stateless)
+
+ConversionService - 타입 변환 서비스를 제공. 여러 Converter를 등록
+
+**[5] Formatter**
+
+Formatter - 양방향 타입 변환(String → 타입, 타입 → String) 바인딩할 필드에 적용 (@NumberFormat, @DateTimeFormat)
+
+**[6] Validator란?**
+
+Validator: 객체를 검증하기 위한 인터페이스. 객체 검증기 구현에 사용
+
+**[7] Validator를 이용한 검증 - 수동**
+
+컨트롤러 메서드 내부에서 검증하던 것을 별도로 분리함! → Validator 메서드 생성  호출.
+
+**[8] Validator를 이용한 검증 - 자동**
+
+@InitBinder로 Validator를 등록할 클래에 애너테이션을 붙여줌. 
+
+Validator 등록(setValidator()) 후 검증할 객체 앞에 @Valid 애너테이션 붙여주면 됨
+
+**[9] 글로벌 Validator**
+
+하나의 Validator로 여러 객체를 검증할 때, 글로벌 Validator로 등록
+
+Servlet-context.xml 파일에 등록하기.
+
+글로벌 Validator와 로컬 Validator를 동시에 적용하는 방법: addValidators()
+
+**[10] MessageSource**
+
+에러 메시지를 콘솔 뿐만 아니라 사용자 화면에서도 보여주는 방법?
+
+MessageSource: 다양한 리소스에서 메시지를 읽기 위한 인터페이스 !
+
+getMessage - args는 메세지에 사용할 매개변수를 배열로 저장. locale은 지역 정보
+
+**[11] 검증 메시지의 출력**
+
+스프링이 제공하는 커스텀 태그 라이브러리를 사용
