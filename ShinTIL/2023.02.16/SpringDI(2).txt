@@ -1,0 +1,128 @@
+### SpringDI 활용하기
+
+**[1] 빈(bean)이란?**
+
+JavaBeans - 재사용 가능한 컴포넌트, 상태(iv), getter&setter, no-args constructor
+
+  ↓
+
+Servlet & JSP bean - MVC의 Model, EL, scope, JSP container가 관리
+
+  ↓
+
+EJB(Enterprise Java Beans) - 복잡한 규칙, EJB container가 관리 → 빈의 생성, 소멸 등
+
+  ↓
+
+spring Bean - POJO(Plain Old Java Object) 단순, 독립적, Spring container가 관리
+
+→ EJB를 더 간편하게 개선함.  
+
+**[2] BeanFactory와 ApplicationContext**
+
+Bean
+
+: Spring Container가 관리하는 객체
+
+→ SpringContainer가 XML 파일에 정의 되어있는 Bean을 읽어서 객체를 만듦
+
+SpringContainer
+
+: Bean 저장소, Bean을 저장하고 관리(생성, 소멸, 연결)함.
+
+1. BeanFactory - Bean을 생성, 연결 등의 기본 기능을 정의하는 인터페이스
+2. **ApplicationContext** - BeanFactory를 확장해서 여러 기능을 추가 정의한 인터페이스
+
+**[3] ApplicationContext의 종류**
+
+다양한 종류의 ApplicationContext 구현체를 제공
+
+**[4] Root AC와 Servlet AC**
+
+new XmlWebApplicationContext()를 하면 xml 파일의 listener에서 만들어줌!
+
+![image.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/894e10f4-85e3-4022-bf50-a5393fdec76f/image.png)
+
+JSP의 기본 객체 - Application !
+
+안에 attributes 라는 Map에 key value로 값을 저장함.
+
+**[5] ApplicationContext의 주요 메서드**
+
+**[6] IoC와 DI**
+
+제어의 역전 IoC - 제어의 흐름을 전통적인 방식과 다르게 뒤바꾸는 것
+
+사용자가 제공한 코드를 라이브러리 측에서 호출함. 호출 방향이 바뀜!
+
+객체 지향적 설계 → 분리를 잘 해야됨!
+
+관심사의 분리/변하는 것과 변하지 않는 것의 분리/중복코드
+
+변경되는 부분을 밖으로 빼내서 분리함으로써 메소드 자체는 변하지 않는 코드로 만듦!
+
+의존성 주입 DI - ****사용할 객체를 외부에서 주입받는 것
+
+→ 디자인 패턴 중 전략 패턴에 해당됨!
+
+**스프링 애너테이션 @Autowired**
+
+: 인스턴스 변수(iv), setter, 참조형 매개변수를 가진 생성자, 메서드에 적용
+
+iv 하나하나에 @Autowired를 붙여서 주입하지 말고,
+
+iv들을 매개변수로 하는 생성자를 만들어서 @Autowired하는게 더 좋은 방법!!!
+
+**@Autowired**: SpringContainer에서 타입으로 빈을 검색해서 참조 변수에 자동 주입(DI)
+
+검색된 빈이 n개 이면(같은 타입이 여러개면), 그 중에 참조변수와 이름이 일치하는 것을 주입.
+
+주입 대상이 변수일 때, 검색된 빈이 1개 아니면 예외 발생
+
+→ required = false로 하면 주입할 빈을 못 찾아도 (빈이 0개여도) 예외 발생x
+
+주입 대상이 배열일 때, 검색된 빈이 n개라도 예외 발생x
+
+**스프링 애너테이션 @Resource** 
+
+: SpringContainer에서 이름으로 빈을 검색해서 참조 변수에 자동 주입(DI)
+
+일치하는 이름의 빈이 없으면, 예외 발생!
+
+@Resource(name-=””) 해줘야 하지만 이름을 생략할 수 있음!
+
+@Autowired @Qualifier(””) 해주면 같은 타입이 여러개일때 지정한 이름의 빈을 선택
+
+**스프링 애너테이션 @Component**
+
+<component-scan>로 @Component가 클래스를 자동 검색해서 빈으로 등록
+
++ @Controller, @Service, @Repository, @ControllerAdvice의 메타 애너테이션
+
+메타 에너테이션? 애너테이션을 정의할 때 쓰이는 애너테이션
+
+위의 애너테이션을 정의할 때 @Component가 메타 애너테이션으로 사용되기 때문에 자동 등록됨
+
+**스프링 애너테이션 @Value와 @PropertySource**
+
+systemProperties나 systemEnvironment 등의 값을 가져와서 주입해줄 수 있음!!
+
+프로퍼티, 환경 변수 등을 찾아와서 주입
+
+**[7] 스프링 애너테이션 vs. 표준 애너테이션(JSR-330)**
+
+@Resource 는 해당하는 스프링 애너테이션이 없음 !
+
+**[8] 빈의 초기화** 
+
+- **<property>와 setter**
+
+<property>를 이용한 빈 초기화. setter를 이용
+
+setter를 호출하는 코드 대신 설정 파일에서 property 태그를 이용함!!
+
+- **<property>와 생성자**
+
+<constructor-arg>를 이용한 빈 초기화. 생성자를 이용
+
+- **<list>, <set>, <map>**
